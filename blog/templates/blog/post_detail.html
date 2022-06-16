@@ -19,22 +19,22 @@
     
     <hr>
     <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
-    <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.comments.count }}</a>
-    <div class="post">
-        {% for comment in posts.comment %}
-            <div data-gb-custom-block data-tag="if"></div>
+    {% for comment in post.comments.all %}
+        {% if comment.created_date %}
             <div class="comment">
                 <div class="date">
                     {{ comment.created_date }}
                 </div>
-                <div data-gb-custom-block data-tag="if"></div>
-                    <a class="btn btn-default" href="{% url 'comment_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-                    <a class="btn btn-default" href="{% url 'comment_approve' pk=post.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+                {% if not comment.approved_comment %}
+                    <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                    <a class="btn btn-default" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-ok"></span></a>
+                {% endif %}
                 <strong>{{ comment.author }}</strong>
                 <p>{{ comment.text|linebreaks }}</p>
             </div>
-        {% empty %}
-            <p>No comments here yet :(</p>
-        {% endfor %}
-    </div>
+        {% endif %}
+    {% empty %}
+        <p>No comments here yet :(</p>
+    {% endfor %}
+    
 {% endblock %}
